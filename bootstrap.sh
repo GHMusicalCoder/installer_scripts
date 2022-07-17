@@ -4,6 +4,18 @@ LC_ALL=C
 ################################################################################################################
 ############################################ SUPPORTING FUNCTIONS ##############################################
 ################################################################################################################
+function system_apps() {
+    messenger info "Adding system apps via apt-get"
+    ${INSTALL} build-essential dcfldd dconf-editor gddrescue gparted \
+        libbz2-dev libcairo2-dev libffi-dev libgirepository1.0-dev liblzma-dev \
+        libncurses5-dev libncursesw5-dev libreadline-dev libssl-dev libxmlsec1-dev libxml2-dev \
+        llvm lsscsi make mlocate net-tools nfs-common nmap p7zip-rar pavucontrol \
+        rar software-properties-common tk-dev ttf-mscorefonts-installer unrar vim wget xz-utils
+
+    messenger info "Adding system apps via deb-get"
+    ${DG_INSTALL} appimagelauncher bitwarden fd lsd ubuntu-make
+}
+
 function config_gitlab() {
     messenger info "Configure gitlab credentials..."
     cp -v "${VENTOY_FILES}gitlab.creds" "${HOME}.config/gitcreds"
@@ -14,6 +26,21 @@ function config_github() {
     messenger info "Configure github credentials..."
     cp -v "${VENTOY_FILES}github.creds" "${HOME}.config/gitcreds"
     cp -v "${GIT_DIR}files/github.config" "${HOME}.config/gitcreds"
+}
+
+function final_cleanup() {
+    messenger info "Removing undesired fonts..."
+    ${APT} purge fonts-kacst fonts-kacst-one fonts-gubbi fonts-kalapi fonts-teluguvijayam fonts-lklug-sinhala \
+        fonts-lohit-knda fonts-navilu fonts-gujr-extra fonts-lohit-gujr fonts-lohit-telu fonts-samyak-gujr \
+        fonts-telu-extra fonts-yrsa-rasa fonts-lohit-beng-assamese fonts-lohit-beng-bengali fonts-lohit-deva \
+        fonts-lohit-gujr fonts-lohit-guru fonts-lohit-knda fonts-lohit-mlym fonts-lohit-orya fonts-lohit-taml-classical \
+        fonts-lohit-taml fonts-lohit-telu fonts-beng-extra fonts-deva-extra fonts-gargi fonts-guru-extra fonts-nakula \
+        fonts-orya-extra fonts-sahadeva fonts-samyak-deva fonts-samyak-mlym fonts-samyak-taml fonts-sarai fonts-smc \
+        fonts-smc-anjalioldlipi fonts-smc-chilanka fonts-smc-dyuthi fonts-smc-gayathri fonts-smc-karumbi \ 
+        fonts-smc-manjari fonts-smc-meera fonts-smc-rachana fonts-smc-raghumalayalamsans \
+        fonts-smc-suruma fonts-smc-uroob
+    
+    # no longer used fonts - fonts-smc-keraleeyam 
 }
 
 function load_install_script() {
@@ -68,10 +95,11 @@ APT="$(which apt)"
 DEB=""
 RM="$(which rm)"
 INSTALL="${SUDO} ${APT} install -y"
+DG_INSTALL=""
 COMP_NAME="$(hostname)"
 VENTOY_FILES="/media/$USER/ventoy/InstallScript/files/"
 HOME="/home/$USER/"
-GIT_DIR="${HOME}/Development/installer-scripts/"
+GIT_DIR="${HOME}Development/installer-scripts/"
 
 messenger info "Installing dependencies..."
 ${SUDO} ${APT} update
@@ -86,9 +114,11 @@ else
 fi
     
 DEB="deb-get"
+DG_INSTALL="${DEB} install"
 
 messenger info "Starting installation process..."
 #build_directories
 config_github
 config_gitlab
 
+final_cleanup
