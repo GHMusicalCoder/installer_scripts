@@ -3,9 +3,12 @@ Master install scripts to run on my ubuntu based computers after the minimal OS 
 
 The goal of this is to switch from ansible pull to a bash script.  One of the reasons is switching to deb-get for a lot of third party apps.
 
+### Bootstrap file
+
+
 ### System installation
-1. directories
-2. personal directories
+1. ~~directories~~
+2. ~~personal directories~~
 3. github config
 4. gitlab config
 5. system 
