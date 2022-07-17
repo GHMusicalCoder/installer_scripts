@@ -9,8 +9,8 @@ The goal of this is to switch from ansible pull to a bash script.  One of the re
 ### System installation
 1. ~~directories~~
 2. ~~personal directories~~
-3. github config
-4. gitlab config
+3. ~~github config~~
+4. ~~gitlab config~~
 5. system 
 6. nfs mounts
 7. virtual machines

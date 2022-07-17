@@ -4,6 +4,12 @@ LC_ALL=C
 ################################################################################################################
 ############################################ SUPPORTING FUNCTIONS ##############################################
 ################################################################################################################
+function config_gitlab() {
+    messenger info "Configure gitlab credentials..."
+    cp -v "${VENTOY_FILES}gitlab.creds" "${HOME}.config/gitcreds"
+    cp -v "${GIT_DIR}files/gitlab.config" "${HOME}.config/gitcreds"
+}
+
 function config_github() {
     messenger info "Configure github credentials..."
     cp -v "${VENTOY_FILES}github.creds" "${HOME}.config/gitcreds"
@@ -84,4 +90,5 @@ DEB="deb-get"
 messenger info "Starting installation process..."
 #build_directories
 config_github
+config_gitlab
 
