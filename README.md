@@ -11,7 +11,7 @@ The goal of this is to switch from ansible pull to a bash script.  One of the re
 2. ~~personal directories~~
 3. ~~github config~~
 4. ~~gitlab config~~
-5. system 
+5. ~~system~~
 6. nfs mounts
 7. virtual machines
 8. vm cleanup

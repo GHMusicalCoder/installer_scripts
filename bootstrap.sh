@@ -31,93 +31,6 @@ function download_file() {
     fi
 }
 
-
-function system_btop() {
-    messenger info "Installing btop++ ..."
-    CACHE_FILE="${CACHE_DIR}/btop.json"
-    get_github_cache "${CACHE_FILE}" "https://api.github.com/repos/aristocratos/btop/releases/latest"
-
-    URL=$(grep "browser_download_url.*-x86_64-linux-musl.tbz" "${CACHE_FILE}" | head -n1 | cut -d'"' -f4)
-    FILE="${URL##*/}"
-
-    download_file "${URL}" "${FILE}"
-
-    # make temp folder - unzip file - then run make
-    WORK="${CACHE_DIR}/btop"
-    mkdir -p "${WORK}"; 
-    tar -xjf "${CACHE_DIR}/${FILE}" -C "${WORK}"
-    cd "${WORK}"
-    make install PREFIX="${BIN_DIR}"
-
-    cd "$ACTIVE_DIR"
-}
-
-function system_bw-cli() {
-    messenger info "Adding Bitwarden CLI..."
-    CACHE_FILE="${CACHE_DIR}/bw-cli.json"
-    get_github_cache "${CACHE_FILE}" "https://api.github.com/repos/bitwarden/cli/releases/latest"
-
-    URL=$(grep "browser_download_url.*.zip" "${CACHE_FILE}" | head -n1 | cut -d'"' -f4)
-    FILE="${URL##*/}"
-
-    download_file "${URL}" "${FILE}"
-
-    unzip -qq "${CACHE_DIR}/${FILE}" -d "${CACHE_DIR}"
-
-    mv "${CACHE_DIR}/bw" "${BIN_DIR}/bin"
-    chmod 755 "${ZIP_DIR}/bw"
-}
-
-function system_apps() {
-    messenger info "Adding system apps via apt-get"
-    ${INSTALL} build-essential dcfldd dconf-editor gddrescue gparted \
-        libbz2-dev libcairo2-dev libffi-dev libgirepository1.0-dev liblzma-dev \
-        libncurses5-dev libncursesw5-dev libreadline-dev libssl-dev libxmlsec1-dev libxml2-dev \
-        llvm lsscsi make mlocate net-tools nfs-common nmap p7zip-rar pavucontrol \
-        rar software-properties-common tk-dev ttf-mscorefonts-installer unrar vim wget xz-utils
-
-    messenger info "Adding system apps via deb-get"
-    ${DG_INSTALL} appimagelauncher bitwarden fd git-delta lsd ubuntu-make
-}
-
-function config_gitlab() {
-    messenger info "Configure gitlab credentials..."
-    cp -v "${VENTOY_FILES}/gitlab.creds" "${HOME}/.config/gitcreds"
-    cp -v "${GIT_DIR}/files/gitlab.config" "${HOME}/.config/gitcreds"
-}
-
-function config_github() {
-    messenger info "Configure github credentials..."
-    cp -v "${VENTOY_FILES}/github.creds" "${HOME}/.config/gitcreds"
-    cp -v "${GIT_DIR}/files/github.config" "${HOME}/.config/gitcreds"
-}
-
-function final_cleanup() {
-    messenger info "Removing undesired fonts..."
-    ${SUDO} ${APT} purge -y fonts-kacst* fonts-gubbi fonts-kalapi fonts-telu* fonts-lklug* fonts-beng* \
-        fonts-deva* fonts-gargi fonts-guru* fonts-nakula fonts-orya* fonts-sahadeva fonts-samyak* fonts-sarai* \
-        fonts-smc* fonts-lohit* fonts-navilu* fonts-gujr* fonts-yrsa* 
-    ${SUDO} ${APT} autoremove -y
-}
-
-function load_install_script() {
-    messenger info "Bringing installer script and files down from GitHub..."
-    cd "${HOME}/Development"
-    git clone https://github.com/GHMusicalCoder/installer_scripts.git
-}
-
-function build_directories() {
-    messenger info "Creating HOME directories..."
-    cd
-    mkdir -p {Development,.config/gitcreds,.icons/Sweet-Purple,.themes,Temp,Applications/{AppImages,GitApps,SingularApps},Data,Work/ObsidianNotes}
-    if [ "${COMP_NAME}" == "the-doctor" ] || [ "${COMP_NAME}" == "the-tardis" ]; then
-        messenger info "Creating additional personal HOME directories..."
-        mkdir -p {Applications/SingularApps/yt-dlp,NASShares,Documents/{Books,Gaming,Magazines,Recipes},Videos/{CTT,Wimpy}}
-    fi
-}
-
-
-
 function messenger() {
     if [ -z "${1}" ] || [ -z "${2}" ]; then
         return
@@ -143,6 +56,94 @@ function messenger() {
                 exit 1;;
         *) echo -e " [?] UNKNOWN: ${MSG}";;
     esac
+}
+
+################################################################################################################
+############################################ INSTALLATION FUNCTIONS ############################################
+################################################################################################################
+function build_directories() {
+    messenger info "Creating HOME directories..."
+    cd
+    mkdir -p {Development,.config/gitcreds,.icons/Sweet-Purple,.themes,Temp,Applications/{AppImages,GitApps,SingularApps},Data,Work/ObsidianNotes}
+    if [ "${COMP_NAME}" == "the-doctor" ] || [ "${COMP_NAME}" == "the-tardis" ]; then
+        messenger info "Creating additional personal HOME directories..."
+        mkdir -p {Applications/SingularApps/yt-dlp,NASShares,Documents/{Books,Gaming,Magazines,Recipes},Videos/{CTT,Wimpy}}
+    fi
+}
+
+function load_install_script() {
+    messenger info "Bringing installer script and files down from GitHub..."
+    cd "${HOME}/Development"
+    git clone https://github.com/GHMusicalCoder/installer_scripts.git
+}
+
+function config_github() {
+    messenger info "Configure github credentials..."
+    cp -v "${VENTOY_FILES}/github.creds" "${HOME}/.config/gitcreds"
+    cp -v "${GIT_DIR}/files/github.config" "${HOME}/.config/gitcreds"
+}
+
+function config_gitlab() {
+    messenger info "Configure gitlab credentials..."
+    cp -v "${VENTOY_FILES}/gitlab.creds" "${HOME}/.config/gitcreds"
+    cp -v "${GIT_DIR}/files/gitlab.config" "${HOME}/.config/gitcreds"
+}
+
+function system_apps() {
+    messenger info "Adding system apps via apt-get"
+    ${INSTALL} build-essential dcfldd dconf-editor gddrescue gparted \
+        libbz2-dev libcairo2-dev libffi-dev libgirepository1.0-dev liblzma-dev \
+        libncurses5-dev libncursesw5-dev libreadline-dev libssl-dev libxmlsec1-dev libxml2-dev \
+        llvm lsscsi make mlocate net-tools nfs-common nmap p7zip-rar pavucontrol \
+        rar software-properties-common tk-dev ttf-mscorefonts-installer unrar vim wget xz-utils
+
+    messenger info "Adding system apps via deb-get"
+    ${DG_INSTALL} appimagelauncher bitwarden fd git-delta lsd ubuntu-make
+}
+
+function system_bw-cli() {
+    messenger info "Adding Bitwarden CLI..."
+    CACHE_FILE="${CACHE_DIR}/bw-cli.json"
+    get_github_cache "${CACHE_FILE}" "https://api.github.com/repos/bitwarden/cli/releases/latest"
+
+    URL=$(grep "browser_download_url.*.zip" "${CACHE_FILE}" | head -n1 | cut -d'"' -f4)
+    FILE="${URL##*/}"
+
+    download_file "${URL}" "${FILE}"
+
+    unzip -qq "${CACHE_DIR}/${FILE}" -d "${CACHE_DIR}"
+
+    mv "${CACHE_DIR}/bw" "${BIN_DIR}/bin"
+    chmod 755 "${ZIP_DIR}/bw"
+}
+
+function system_btop() {
+    messenger info "Installing btop++ ..."
+    CACHE_FILE="${CACHE_DIR}/btop.json"
+    get_github_cache "${CACHE_FILE}" "https://api.github.com/repos/aristocratos/btop/releases/latest"
+
+    URL=$(grep "browser_download_url.*-x86_64-linux-musl.tbz" "${CACHE_FILE}" | head -n1 | cut -d'"' -f4)
+    FILE="${URL##*/}"
+
+    download_file "${URL}" "${FILE}"
+
+    # make temp folder - unzip file - then run make
+    WORK="${CACHE_DIR}/btop"
+    mkdir -p "${WORK}"; 
+    tar -xjf "${CACHE_DIR}/${FILE}" -C "${WORK}"
+    cd "${WORK}"
+    make install PREFIX="${BIN_DIR}"
+
+    cd "$ACTIVE_DIR"
+}
+
+
+function final_cleanup() {
+    messenger info "Removing undesired fonts..."
+    ${SUDO} ${APT} purge -y fonts-kacst* fonts-gubbi fonts-kalapi fonts-telu* fonts-lklug* fonts-beng* \
+        fonts-deva* fonts-gargi fonts-guru* fonts-nakula fonts-orya* fonts-sahadeva fonts-samyak* fonts-sarai* \
+        fonts-smc* fonts-lohit* fonts-navilu* fonts-gujr* fonts-yrsa* 
+    ${SUDO} ${APT} autoremove -y
 }
 
 ################################################################################################################
