@@ -67,7 +67,8 @@ function build_directories() {
     mkdir -p {Development,.config/gitcreds,.icons/Sweet-Purple,.themes,Temp,Applications/{AppImages,GitApps,SingularApps},Data,Work/ObsidianNotes}
     if [ "${COMP_NAME}" == "the-doctor" ] || [ "${COMP_NAME}" == "the-tardis" ]; then
         messenger info "Creating additional personal HOME directories..."
-        mkdir -p {Applications/SingularApps/yt-dlp,NASShares,Documents/{Books,Gaming,Magazines,Recipes},Videos/{CTT,Wimpy}}
+        mkdir -p {Applications/SingularApps/yt-dlp,NASShares}
+        mkdir -p {/mnt/crypt,/mnt/vault}
     fi
 }
 
@@ -137,6 +138,25 @@ function system_btop() {
     cd "$ACTIVE_DIR"
 }
 
+function mount_nfs_folders() {
+    if [ "${COMP_NAME}" == "the-doctor" ] || [ "${COMP_NAME}" == "the-tardis" ]; then
+        messenger info "Mounting NFS Volumes from NAS Box..."
+        mount -t nfs 192.168.88.224:/mnt/IOUN/CLRYPT /mnt/crypt
+        mount -t nfs 192.168.88.224:/mnt/IOUN/CLRYPT /mnt/crypt
+        sudo echo "192.168.88.224:/mnt/IOUN/CRYPT /mnt/crypt nfs defaults 0 0" >> /etc/fstab
+        sudo echo "192.168.88.224:/mnt/OGHMA/VAULT /mnt/vault nfs defaults 0 0" >> /etc/fstab
+
+        messenger info "Creating symbolic links..."
+        ln -s "/mnt/crypt" "${HOME}/NASShares/Crypt"
+        ln -s "/mnt/vault" "${HOME}/NASShares/Vault"
+        ln -s "/mnt/vault/Media/Videos/CTT/" "${HOME}/Videos/CTT"
+        ln -s "/mnt/vault/Media/Videos/Wimpy/" "${HOME}/Videos/Wimpy"
+        ln -s "/mnt/vault/Archives/eBooks/" "${HOME}/Documents/Books"
+        ln -s "/mnt/vault/Archives/Gaming/" "${HOME}/Documents/Gaming"
+        ln -s "/mnt/vault/Archives/Magazines/" "${HOME}/Documents/Magazines"
+        ln -s "/mnt/vault/Archives/Recipes/" "${HOME}/Documents/Recipes"
+    fi
+}
 
 function final_cleanup() {
     messenger info "Removing undesired fonts..."
