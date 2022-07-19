@@ -2,43 +2,70 @@
 LC_ALL=C
 
 #add shellcheck call to development
-#research bw call
-#research btop install
 
 
 ################################################################################################################
 ############################################ SUPPORTING FUNCTIONS ##############################################
 ################################################################################################################
-function system_bw-cli() {
-    CACHE_DIR="${HOME}Temp/"
-    CACHE_FILE="${CACHE_DIR}bw-cli.json"
-    messenger info "Adding Bitwarden CLI..."
-    messenger info "Updating BW-CLI Installation cache..."
+function get_github_cache() {
+    CACHE_FILE="${1}"
     if [ ! -e "${CACHE_FILE}" ] || test "$(find "${CACHE_FILE}" -mmin +60)"; then
-        if ! wget -q "https://api.github.com/repos/bitwarden/cli/releases/latest" -O "${CACHE_FILE}"; then
+        if ! wget -q "${2}" -O "${CACHE_FILE}"; then
             messenger warn "Updating the BW-CLI Installation cache failed.  Deleting it." 
             rm "${CACHE_FILE}" 2>/dev/null
         fi
     fi
+
     if [ -f "${CACHE_FILE}" ] && grep "API rate limit exceeded" "${CACHE_FILE}"; then
         messenger warn "Updating ${CACHE_FILE} exceeded GitHub API limits.  Deleting it."
         rm "${CACHE_FILE}" 2>/dev/null
     fi
-    URL=$(grep "browser_download_url.*.zip" "${CACHE_FILE}" | head -n1 | cut -d'"' -f4)
-    VERSION="$(echo "${URL}" | cut -d'_' -f2)"
+}
+
+function download_file() {
+    if [ ! -f "${CACHE_DIR}/${2}" ]; then
+        if ! wget --quiet --continue --show-progress --progress=bar:force:noscroll "${1}" -O "${CACHE_DIR}/${2}"; then
+            messenger error "Failed to download ${1}. Deleting ${CACHE_DIR}/${2}..."
+            rm "${CACHE_DIR}/${2}" 2>/dev/null
+        fi
+    fi
+}
+
+
+function system_btop() {
+    messenger info "Installing btop++ ..."
+    CACHE_FILE="${CACHE_DIR}/btop.json"
+    get_github_cache "${CACHE_FILE}" "https://api.github.com/repos/aristocratos/btop/releases/latest"
+
+    URL=$(grep "browser_download_url.*-x86_64-linux-musl.tbz" "${CACHE_FILE}" | head -n1 | cut -d'"' -f4)
     FILE="${URL##*/}"
 
-    messenger info "Downloading the BW-CLI Zip file..."
-    if ! wget --quiet --continue --show-progress --progress=bar:force:noscroll "${URL}" -O "${CACHE_DIR}${FILE}"; then
-        messenger error "Failed to download ${URL}. Deleting ${CACHE_DIR}${FILE}..."
-        rm "${CACHE_DIR}${FILE}" 2>/dev/null
-    fi
+    download_file "${URL}" "${FILE}"
 
-    unzip -qq "${CACHE_DIR}${FILE}" -d "${CACHE_DIR}"
+    # make temp folder - unzip file - then run make
+    WORK="${CACHE_DIR}/btop"
+    mkdir -p "${WORK}"; 
+    tar -xjf "${CACHE_DIR}/${FILE}" -C "${WORK}"
+    cd "${WORK}"
+    make install PREFIX="${BIN_DIR}"
 
-    mv "${CACHE_DIR}bw" "${ZIP_DIR}"
-    chmod 755 "${ZIP_DIR}bw"
-    messenger info "Bitwarden CLI has been added..."    
+    cd "$ACTIVE_DIR"
+}
+
+function system_bw-cli() {
+    messenger info "Adding Bitwarden CLI..."
+    CACHE_FILE="${CACHE_DIR}/bw-cli.json"
+    get_github_cache "${CACHE_FILE}" "https://api.github.com/repos/bitwarden/cli/releases/latest"
+
+    URL=$(grep "browser_download_url.*.zip" "${CACHE_FILE}" | head -n1 | cut -d'"' -f4)
+    FILE="${URL##*/}"
+
+    download_file "${URL}" "${FILE}"
+
+    unzip -qq "${CACHE_DIR}/${FILE}" -d "${CACHE_DIR}"
+
+    mv "${CACHE_DIR}/bw" "${BIN_DIR}/bin"
+    chmod 755 "${ZIP_DIR}/bw"
 }
 
 function system_apps() {
@@ -55,14 +82,14 @@ function system_apps() {
 
 function config_gitlab() {
     messenger info "Configure gitlab credentials..."
-    cp -v "${VENTOY_FILES}gitlab.creds" "${HOME}.config/gitcreds"
-    cp -v "${GIT_DIR}files/gitlab.config" "${HOME}.config/gitcreds"
+    cp -v "${VENTOY_FILES}/gitlab.creds" "${HOME}/.config/gitcreds"
+    cp -v "${GIT_DIR}/files/gitlab.config" "${HOME}/.config/gitcreds"
 }
 
 function config_github() {
     messenger info "Configure github credentials..."
-    cp -v "${VENTOY_FILES}github.creds" "${HOME}.config/gitcreds"
-    cp -v "${GIT_DIR}files/github.config" "${HOME}.config/gitcreds"
+    cp -v "${VENTOY_FILES}/github.creds" "${HOME}/.config/gitcreds"
+    cp -v "${GIT_DIR}/files/github.config" "${HOME}/.config/gitcreds"
 }
 
 function final_cleanup() {
@@ -75,7 +102,7 @@ function final_cleanup() {
 
 function load_install_script() {
     messenger info "Bringing installer script and files down from GitHub..."
-    cd "${HOME}Development"
+    cd "${HOME}/Development"
     git clone https://github.com/GHMusicalCoder/installer_scripts.git
 }
 
@@ -88,6 +115,8 @@ function build_directories() {
         mkdir -p {Applications/SingularApps/yt-dlp,NASShares,Documents/{Books,Gaming,Magazines,Recipes},Videos/{CTT,Wimpy}}
     fi
 }
+
+
 
 function messenger() {
     if [ -z "${1}" ] || [ -z "${2}" ]; then
@@ -127,10 +156,12 @@ RM="$(which rm)"
 INSTALL="${SUDO} ${APT} install -y"
 DG_INSTALL=""
 COMP_NAME="$(hostname)"
-VENTOY_FILES="/media/$USER/ventoy/InstallScript/files/"
-HOME="/home/$USER/"
-GIT_DIR="${HOME}Development/installer_scripts/"
-ZIP_DIR="${HOME}.local/bin/"
+VENTOY_FILES="/media/$USER/ventoy/InstallScript/files"
+HOME="/home/$USER"
+GIT_DIR="${HOME}/Development/installer_scripts"
+BIN_DIR="${HOME}/.local"
+CACHE_DIR="${HOME}/Temp"
+ACTIVE_DIR="$(pwd)"
 
 messenger info "Installing dependencies..."
 # ${SUDO} ${APT} update
@@ -151,6 +182,7 @@ messenger info "Starting installation process..."
 #build_directories
 #config_github
 #config_gitlab
-system_bw-cli
+#system_bw-cli
+system_btop
 
 #final_cleanup
