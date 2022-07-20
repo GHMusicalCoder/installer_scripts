@@ -17,8 +17,8 @@ The goal of this is to switch from ansible pull to a bash script.  One of the re
 8. vm cleanup [withholding for now]
 9. ~~laptops~~
 10. ~~copy files~~
-11. sweet dark theme
-12. candy icons
+11. ~~sweet dark theme~~
+12. ~~candy icons~~
 13. sweet purple folders
 
 ### Software installation

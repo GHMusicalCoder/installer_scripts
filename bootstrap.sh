@@ -197,6 +197,23 @@ function install_sweet_dark_theme() {
     gsettings set org.gnome.desktop.wm.preferences theme "Sweet-Dark"
 }
 
+function install_candy_icons() {
+    messenger info "Installing Candy Icons by EliverLara"
+    # verify .icons directory exists
+    mkdir -p "${HOME}/.icons"
+
+    URL="https://github.com/EliverLara/candy-icons/archive/refs/heads/master.zip"
+    FILE="candy-icons.zip"
+
+    download_file "${URL}" "${FILE}"
+    unzip -qq "${CACHE_DIR}/${FILE}" -d "${HOME}/.icons"
+
+    # folder name is candy-icons-master - so renaming to candy-icons
+    mv "${HOME}/.icons/candy-icons-master" "${HOME}/.icons/candy-icons"
+
+    gsettings set org.gnome.desktop.interface icon-theme candy-icons
+}
+
 function final_cleanup() {
     messenger info "Removing undesired fonts..."
     ${SUDO} ${APT} purge -y fonts-kacst* fonts-gubbi fonts-kalapi fonts-telu* fonts-lklug* fonts-beng* \
@@ -247,5 +264,6 @@ messenger info "Starting installation process..."
 #system_virt_machines
 #laptop_install
 #install_sweet_dark_theme
+#install_candy_icons
 
 #final_cleanup
