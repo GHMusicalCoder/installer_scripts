@@ -13,9 +13,9 @@ The goal of this is to switch from ansible pull to a bash script.  One of the re
 4. ~~gitlab config~~
 5. ~~system~~
 6. ~~nfs mounts~~
-7. virtual machines
+7. ~~virtual machines~~
 8. vm cleanup
-9. laptops
+9. ~~laptops~~
 10. copy files
 11. sweet dark theme
 12. candy icons

@@ -166,6 +166,12 @@ function system_virt_machines() {
     ${DG_INSTALL} quickemu quickgui
 }
 
+function laptop_install() {
+    if [ "${COMP_NAME}" == "co-dev-ckiraly" ] || [ "${COMP_NAME}" == "the-tardis" ]; then
+        ${SUDO} ${APT} install -y laptop-mode-tools
+    fi
+}
+
 function final_cleanup() {
     messenger info "Removing undesired fonts..."
     ${SUDO} ${APT} purge -y fonts-kacst* fonts-gubbi fonts-kalapi fonts-telu* fonts-lklug* fonts-beng* \
@@ -212,6 +218,7 @@ messenger info "Starting installation process..."
 #config_github
 #config_gitlab
 #system_bw-cli
-system_btop
+#system_btop
+#system_virt_machines
 
 #final_cleanup
