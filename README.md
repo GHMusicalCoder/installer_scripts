@@ -14,9 +14,9 @@ The goal of this is to switch from ansible pull to a bash script.  One of the re
 5. ~~system~~
 6. ~~nfs mounts~~
 7. ~~virtual machines~~
-8. vm cleanup
+8. vm cleanup [withholding for now]
 9. ~~laptops~~
-10. copy files
+10. ~~copy files~~
 11. sweet dark theme
 12. candy icons
 13. sweet purple folders

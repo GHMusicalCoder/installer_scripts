@@ -67,7 +67,7 @@ function build_directories() {
     mkdir -p {Development,.config/gitcreds,.icons/Sweet-Purple,.themes,Temp,Applications/{AppImages,GitApps,SingularApps},Data,Work/ObsidianNotes}
     if [ "${COMP_NAME}" == "the-doctor" ] || [ "${COMP_NAME}" == "the-tardis" ]; then
         messenger info "Creating additional personal HOME directories..."
-        mkdir -p {Applications/SingularApps/yt-dlp,NASShares}
+        mkdir -p {Applications/SingularApps/yt-dlp,NASShares,Pictures/{"Desktop Backgrounds",Masonic}}
         mkdir -p {/mnt/crypt,/mnt/vault}
     fi
 }
@@ -172,6 +172,13 @@ function laptop_install() {
     fi
 }
 
+function copy_files() {
+    if [ "${COMP_NAME}" == "the-doctor" ] || [ "${COMP_NAME}" == "the-tardis" ]; then
+        cp "/mnt/vault/Media/Images/Desktop Backgrounds/*.*" "${HOME}/Pictures/Desktop Backrounds"
+        cp "/mnt/vault/Media/Images/Masonic/*.*" "${HOME}/Pictures/Masonic"
+    fi
+}
+
 function final_cleanup() {
     messenger info "Removing undesired fonts..."
     ${SUDO} ${APT} purge -y fonts-kacst* fonts-gubbi fonts-kalapi fonts-telu* fonts-lklug* fonts-beng* \
@@ -220,5 +227,6 @@ messenger info "Starting installation process..."
 #system_bw-cli
 #system_btop
 #system_virt_machines
+#laptop_install
 
 #final_cleanup
