@@ -179,6 +179,24 @@ function copy_files() {
     fi
 }
 
+function install_sweet_dark_theme() {
+    messenger info "Installing Sweet Dark Theme by EliverLara"
+    CACHE_FILE="${CACHE_DIR}/sweet.json"
+    get_github_cache "${CACHE_FILE}" "https://api.github.com/repos/EliverLara/Sweet/releases/latest"
+
+    URL=$(grep "browser_download_url.*Dark.zip" "${CACHE_FILE}" | head -n1 | cut -d'"' -f4)
+    FILE="${URL##*/}"
+
+    download_file "${URL}" "${FILE}"
+
+    #verify .themes exist
+    mkdir -p "${HOME}/.themes"
+    unzip -qq "${CACHE_DIR}/${FILE}" -d "${HOME}/.themes"
+
+    gsettings set org.gnome.desktop.interface gtk-theme "Sweet-Dark"
+    gsettings set org.gnome.desktop.wm.preferences theme "Sweet-Dark"
+}
+
 function final_cleanup() {
     messenger info "Removing undesired fonts..."
     ${SUDO} ${APT} purge -y fonts-kacst* fonts-gubbi fonts-kalapi fonts-telu* fonts-lklug* fonts-beng* \
@@ -228,5 +246,6 @@ messenger info "Starting installation process..."
 #system_btop
 #system_virt_machines
 #laptop_install
+#install_sweet_dark_theme
 
 #final_cleanup
