@@ -158,6 +158,14 @@ function mount_nfs_folders() {
     fi
 }
 
+function system_virt_machines() {
+    messenger info "Installing virtual machine apps..."
+    ${SUDO} ${APT} install -y qemu qemu-kvm qemu-system qemu-utils libvirt-clients libvert-daemon-system \
+        virtinst virt-manager
+    ${SUDO} usermod -a -G libvirt "$USER"
+    ${DG_INSTALL} quickemu quickgui
+}
+
 function final_cleanup() {
     messenger info "Removing undesired fonts..."
     ${SUDO} ${APT} purge -y fonts-kacst* fonts-gubbi fonts-kalapi fonts-telu* fonts-lklug* fonts-beng* \
