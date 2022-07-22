@@ -244,6 +244,31 @@ function install_vs_code() {
     code --install-extension alexcvzz.vscode-sqlite
 }
 
+function install_development() {
+    ${INSTALL} python3-ebooklib python3-enchant python3-gst-1.0 python3-gtkspellcheck python3-selenium python3-sqlalchemy \
+        python3-sqlalchemy-ext python3-toml python3-pip python3-venv sqlite3 libsqlite3-dev
+
+    ${SUDO} snap install pycharm-professional --classic
+}
+
+function install_git_repos() {
+    cd ${HOME}/Development
+    ${CLONE} "https://gitlab.com/MusicalCoder/ansible_pull.git"
+    ${CLONE} "https://gitlab.com/MusicalCoder/my-notes.git"
+    ${CLONE} "https://gitlab.com/MusicalCoder/lyric-web-app.git"
+    ${CLONE} "https://gitlab.com/MusicalCoder/music-karaoke-tracker.git"
+    ${CLONE} "https://gitlab.com/MusicalCoder/codingsites.git"
+    ${CLONE} "https://gitlab.com/MusicalCoder/personal-wikis.git"
+    ${CLONE} "https://gitlab.com/MusicalCoder/tablemanager.git"
+    ${CLONE} "https://gitlab.com/MusicalCoder/wordplay.git"
+    ${CLONE} "https://gitlab.com/MusicalCoder/wordle-solver.git"
+    ${CLONE} "https://github.com/GHMusicalCoder/rpg-cards.git"
+    ${CLONE} "https://github.com/GHMusicalCoder/deb-get.git"
+
+    cd ${ACTIVE_DIR}
+}
+
+
 function final_cleanup() {
     messenger info "Removing undesired fonts..."
     ${SUDO} ${APT} purge -y fonts-kacst* fonts-gubbi fonts-kalapi fonts-telu* fonts-lklug* fonts-beng* \
@@ -258,7 +283,6 @@ function final_cleanup() {
 messenger info "Setting up configuration variables..."
 SUDO="$(which sudo)"
 APT="$(which apt)"
-DEB=""
 RM="$(which rm)"
 INSTALL="${SUDO} ${APT} install -y"
 DG_INSTALL=""
@@ -273,7 +297,8 @@ ACTIVE_DIR="$(pwd)"
 messenger info "Installing dependencies..."
 # ${SUDO} ${APT} update
 # ${INSTALL} git curl lsb-core
-
+GIT="$(which git)"
+CLONE="${GIT} clone"
 
 if ! command -v deb-get 1>/dev/null; then
     messenger info "Installing deb-get for additional 3rd party app management..."
@@ -297,5 +322,7 @@ messenger info "Starting installation process..."
 #install_candy_icons
 #install_sweet_folders
 #install_vs_code
-
+#install_development
+#install_git_repos
+ 
 #final_cleanup
