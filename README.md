@@ -19,7 +19,7 @@ The goal of this is to switch from ansible pull to a bash script.  One of the re
 10. ~~copy files~~
 11. ~~sweet dark theme~~
 12. ~~candy icons~~
-13. sweet purple folders
+13. ~~sweet purple folders~~
 
 ### Software installation
 1. accessories

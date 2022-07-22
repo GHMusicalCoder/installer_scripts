@@ -214,6 +214,19 @@ function install_candy_icons() {
     gsettings set org.gnome.desktop.interface icon-theme candy-icons
 }
 
+function install_sweet_folders() {
+    # steps 1 - clone sweet folders git repo
+    mkdir -p "${HOME}/.icons/Sweet-Purple"
+
+    cd "${CACHE_DIR}"
+    git clone "https://github.com/EliverLara/Sweet-folders.git"
+    cp "${CACHE_DIR}/sweet_folders/Sweet-Purple" "${HOME}/.icons/Sweet-Purple/"
+    sed -i 's/^Inherits=.*/Inherits=candy-icons,breeze-dark,gnome,ubuntu-mono-dark,Mint-X,elementary,gnome,hicolor' \
+        "${HOME}/.icons/Sweet-Purple/index.theme"
+
+    cd "${ACTIVE_DIR}"
+}
+
 function final_cleanup() {
     messenger info "Removing undesired fonts..."
     ${SUDO} ${APT} purge -y fonts-kacst* fonts-gubbi fonts-kalapi fonts-telu* fonts-lklug* fonts-beng* \
@@ -265,5 +278,6 @@ messenger info "Starting installation process..."
 #laptop_install
 #install_sweet_dark_theme
 #install_candy_icons
+#install_sweet_folders
 
 #final_cleanup
