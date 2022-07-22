@@ -227,6 +227,23 @@ function install_sweet_folders() {
     cd "${ACTIVE_DIR}"
 }
 
+function install_vs_code() {
+    ${DG_INSTALL} code
+
+    # install default extensions
+    code --install-extension tomaciazek.ansible
+    code --install-extension rogalmic.bash-debug
+    code --install-extension mads-hartmann.bash-ide-vscode
+    code --install-extension CoenraadS.bracket-pair-colorizer
+    code --install-extension GitHub.vscode-pull-request-github
+    code --install-extension yzhang.markdown-all-in-one
+    code --install-extension shd101wyy.markdown-preview-enhanced
+    code --install-extension vangware.dark-plus-material
+    code --install-extension ms-python.python
+    code --install-extension ms-python.vscode-pylance
+    code --install-extension alexcvzz.vscode-sqlite
+}
+
 function final_cleanup() {
     messenger info "Removing undesired fonts..."
     ${SUDO} ${APT} purge -y fonts-kacst* fonts-gubbi fonts-kalapi fonts-telu* fonts-lklug* fonts-beng* \
@@ -279,5 +296,6 @@ messenger info "Starting installation process..."
 #install_sweet_dark_theme
 #install_candy_icons
 #install_sweet_folders
+#install_vs_code
 
 #final_cleanup
