@@ -274,6 +274,15 @@ function install_git_repos() {
 }
 
 function install_games() {
+    messenger info "Installing game applications..."
+    # configure system for i386
+    ${SUDO} dpkg --add-architecture i386
+    # download and add repo key for wine
+    ${SUDO} wget -nc -0 /usr/share/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
+    ${SUDO} wget -nc -P /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/${UBUNTU_NICK}/winehq-${UBUNTU_NICK}.sources
+    ${SUDO} ${APT} update
+    ${INSTALL} --install-recommends winehq-stable
+    
     ${DG_INSTALL} com.github.tkashkin.gamehub lutris minigalaxy retroarch
 }
 
@@ -301,6 +310,7 @@ GIT_DIR="${HOME}/Development/installer_scripts"
 BIN_DIR="${HOME}/.local"
 CACHE_DIR="${HOME}/Temp"
 ACTIVE_DIR="$(pwd)"
+UBUNTU_NICK="jammy"
 
 messenger info "Installing dependencies..."
 # ${SUDO} ${APT} update
