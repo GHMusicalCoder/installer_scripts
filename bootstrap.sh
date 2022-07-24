@@ -91,15 +91,16 @@ function config_gitlab() {
 }
 
 function system_apps() {
-    messenger info "Adding system apps via apt-get"
+    messenger info "Adding system apps..."
     ${INSTALL} build-essential dcfldd dconf-editor gddrescue gparted \
         libbz2-dev libcairo2-dev libffi-dev libgirepository1.0-dev liblzma-dev \
         libncurses5-dev libncursesw5-dev libreadline-dev libssl-dev libxmlsec1-dev libxml2-dev \
         llvm lsscsi make mlocate net-tools nfs-common nmap p7zip-rar pavucontrol \
         rar software-properties-common tk-dev ttf-mscorefonts-installer unrar vim wget xz-utils
 
-    messenger info "Adding system apps via deb-get"
     ${DG_INSTALL} appimagelauncher bitwarden bottom duf fd git-delta lsd ubuntu-make
+
+    ${SUDO} flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 }
 
 function system_bw-cli() {
@@ -282,7 +283,7 @@ function install_games() {
     ${SUDO} wget -nc -P /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/${UBUNTU_NICK}/winehq-${UBUNTU_NICK}.sources
     ${SUDO} ${APT} update
     ${INSTALL} --install-recommends winehq-stable
-    
+
     ${DG_INSTALL} com.github.tkashkin.gamehub lutris minigalaxy retroarch
 }
 
