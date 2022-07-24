@@ -285,6 +285,10 @@ function install_games() {
     ${INSTALL} --install-recommends winehq-stable
 
     ${DG_INSTALL} com.github.tkashkin.gamehub lutris minigalaxy retroarch
+
+    ${SUDO} flatpak install -y flathub com.dosbox_x.DOSBox-X
+
+    ${INSTALL} steam frozen-bubble playonlinux wesnoth wesnoth-music
 }
 
 function final_cleanup() {
