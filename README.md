@@ -25,7 +25,7 @@ The goal of this is to switch from ansible pull to a bash script.  One of the re
 1. accessories (removed easytag - now no accessories to install)
 2. ~~vs code~~
 3. ~~development~~
-4. games
+4. ~~games~~
 5. graphics
 6. internet
 7. multimedia

@@ -291,6 +291,11 @@ function install_games() {
     ${INSTALL} steam frozen-bubble playonlinux wesnoth wesnoth-music
 }
 
+function install_graphics() {
+    messenger info "Installing graphics applications..."
+    ${INSTALL} gimp gimp-data-extras gimp-gap gimp-plugin-registry gpick pinta inkscape
+}
+
 function final_cleanup() {
     messenger info "Removing undesired fonts..."
     ${SUDO} ${APT} purge -y fonts-kacst* fonts-gubbi fonts-kalapi fonts-telu* fonts-lklug* fonts-beng* \
@@ -347,5 +352,7 @@ messenger info "Starting installation process..."
 #install_vs_code
 #install_development
 #install_git_repos
+#install_games
+#install_graphics
 
 #final_cleanup
