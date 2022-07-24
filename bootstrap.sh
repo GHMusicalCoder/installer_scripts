@@ -99,7 +99,7 @@ function system_apps() {
         rar software-properties-common tk-dev ttf-mscorefonts-installer unrar vim wget xz-utils
 
     messenger info "Adding system apps via deb-get"
-    ${DG_INSTALL} appimagelauncher bitwarden bottom fd git-delta lsd ubuntu-make
+    ${DG_INSTALL} appimagelauncher bitwarden bottom duf fd git-delta lsd ubuntu-make
 }
 
 function system_bw-cli() {
@@ -227,7 +227,13 @@ function install_sweet_folders() {
     cd "${ACTIVE_DIR}"
 }
 
+function install_accessories() {
+    messenger info "Installing accessory applications..."
+    ${DG_INSTALL} openaudible
+}
+
 function install_vs_code() {
+    messenger info "Installing Visual Studio code and extensions..."
     ${DG_INSTALL} code
 
     # install default extensions
@@ -235,7 +241,6 @@ function install_vs_code() {
     code --install-extension rogalmic.bash-debug
     code --install-extension mads-hartmann.bash-ide-vscode
     code --install-extension CoenraadS.bracket-pair-colorizer
-    code --install-extension GitHub.vscode-pull-request-github
     code --install-extension yzhang.markdown-all-in-one
     code --install-extension shd101wyy.markdown-preview-enhanced
     code --install-extension vangware.dark-plus-material
@@ -248,7 +253,7 @@ function install_development() {
     ${INSTALL} python3-ebooklib python3-enchant python3-gst-1.0 python3-gtkspellcheck python3-selenium python3-sqlalchemy \
         python3-sqlalchemy-ext python3-toml python3-pip python3-venv sqlite3 libsqlite3-dev
 
-    ${DG_INSTALL} docker-ce docker-desktop 
+    ${DG_INSTALL} docker-ce docker-desktop gitkraken
     ${SUDO} snap install pycharm-professional --classic
 }
 
