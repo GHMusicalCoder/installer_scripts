@@ -296,6 +296,13 @@ function install_graphics() {
     ${INSTALL} gimp gimp-data-extras gimp-gap gimp-plugin-registry gpick pinta inkscape
 }
 
+function install_internet() {
+    messenger info "Installing internet applications..."
+    ${SUDO} snap purge firefox
+    ${DG_INSTALL} brave-browser firefox-esr google-chrome-stable opera-stable microsoft-edge-stable element-desktop discord
+    ${SUDO} snap install mumble
+}
+
 function final_cleanup() {
     messenger info "Removing undesired fonts..."
     ${SUDO} ${APT} purge -y fonts-kacst* fonts-gubbi fonts-kalapi fonts-telu* fonts-lklug* fonts-beng* \

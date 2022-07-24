@@ -26,8 +26,8 @@ The goal of this is to switch from ansible pull to a bash script.  One of the re
 2. ~~vs code~~
 3. ~~development~~
 4. ~~games~~
-5. graphics
-6. internet
+5. ~~graphics~~
+6. ~~internet~~
 7. multimedia
 8. office apps
 9. master pdf
