@@ -240,7 +240,6 @@ function install_vs_code() {
     code --install-extension tomaciazek.ansible
     code --install-extension rogalmic.bash-debug
     code --install-extension mads-hartmann.bash-ide-vscode
-    code --install-extension CoenraadS.bracket-pair-colorizer
     code --install-extension yzhang.markdown-all-in-one
     code --install-extension shd101wyy.markdown-preview-enhanced
     code --install-extension vangware.dark-plus-material
@@ -253,7 +252,7 @@ function install_development() {
     ${INSTALL} python3-ebooklib python3-enchant python3-gst-1.0 python3-gtkspellcheck python3-selenium python3-sqlalchemy \
         python3-sqlalchemy-ext python3-toml python3-pip python3-venv sqlite3 libsqlite3-dev
 
-    ${DG_INSTALL} docker-ce docker-desktop gitkraken
+    ${DG_INSTALL} docker-ce docker-desktop gitkraken rpi-imager
     ${SUDO} snap install pycharm-professional --classic
 }
 
