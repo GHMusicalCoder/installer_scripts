@@ -307,7 +307,7 @@ function install_multimedia() {
     messenger info "Installing multimedia apps..."
     ${INSTALL} ubuntu-restricted-extras ubuntu-restricted-addons libavcodec-extra \
         gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly \
-        gstreamer1.0-libav handbrake handbrake-cli kodi
+        gstreamer1.0-libav handbrake handbrake-cli kodi vlc celluloid
 
     ${DG_INSTALL} spotify-client 
     
