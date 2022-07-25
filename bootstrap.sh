@@ -375,5 +375,6 @@ messenger info "Starting installation process..."
 #install_games
 #install_graphics
 #install_internet
+#install_multimedia
 
 #final_cleanup
