@@ -254,7 +254,7 @@ function install_development() {
         python3-sqlalchemy-ext python3-toml python3-pip python3-venv sqlite3 libsqlite3-dev
 
     ${DG_INSTALL} docker-ce docker-desktop gitkraken rpi-imager
-    ${SUDO} snap install pycharm-professional --classic
+    ${FLATPAK} com.jetbrains.PyCharm-Professional
 }
 
 function install_git_repos() {
@@ -286,7 +286,7 @@ function install_games() {
 
     ${DG_INSTALL} com.github.tkashkin.gamehub lutris minigalaxy retroarch
 
-    ${SUDO} flatpak install -y flathub com.dosbox_x.DOSBox-X
+    ${FLATPAK} com.dosbox_x.DOSBox-X
 
     ${INSTALL} steam frozen-bubble playonlinux wesnoth wesnoth-music
 }
@@ -300,7 +300,18 @@ function install_internet() {
     messenger info "Installing internet applications..."
     ${SUDO} snap purge firefox
     ${DG_INSTALL} brave-browser firefox-esr google-chrome-stable opera-stable microsoft-edge-stable element-desktop discord
-    ${SUDO} snap install mumble
+    ${FLATPAK} info.mumble.Mumble
+}
+
+function install_multimedia() {
+    messenger info "Installing multimedia apps..."
+    ${INSTALL} ubuntu-restricted-extras ubuntu-restricted-addons libavcodec-extra \
+        gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly \
+        gstreamer1.0-libav handbrake handbrake-cli kodi
+
+    ${DG_INSTALL} spotify-client 
+    
+    ${FLATPAK} com.makemkv.MakeMKV
 }
 
 function final_cleanup() {
@@ -328,6 +339,8 @@ BIN_DIR="${HOME}/.local"
 CACHE_DIR="${HOME}/Temp"
 ACTIVE_DIR="$(pwd)"
 UBUNTU_NICK="jammy"
+FLATPAK="${SUDO} flatpak install -y flathub"
+
 
 messenger info "Installing dependencies..."
 # ${SUDO} ${APT} update
@@ -361,5 +374,6 @@ messenger info "Starting installation process..."
 #install_git_repos
 #install_games
 #install_graphics
+#install_internet
 
 #final_cleanup
