@@ -29,7 +29,7 @@ The goal of this is to switch from ansible pull to a bash script.  One of the re
 5. ~~graphics~~
 6. ~~internet~~
 7. ~~multimedia~~
-8. office apps
-9. master pdf
-10. zoom
+8. ~~office apps~~
+9. ~~master pdf~~ (I added this into deb-get so it will be available and installed under office apps)
+10. ~~zoom~~
 11. classic optical

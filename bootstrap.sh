@@ -314,6 +314,12 @@ function install_multimedia() {
     ${FLATPAK} com.makemkv.MakeMKV
 }
 
+function install_office() {
+    ${INSTALL} calibre pdfarranger
+
+    ${DG_INSTALL} master-pdf obsidian softmaker-office-2021
+}
+
 function final_cleanup() {
     messenger info "Removing undesired fonts..."
     ${SUDO} ${APT} purge -y fonts-kacst* fonts-gubbi fonts-kalapi fonts-telu* fonts-lklug* fonts-beng* \
