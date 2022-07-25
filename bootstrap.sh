@@ -317,7 +317,7 @@ function install_multimedia() {
 function install_office() {
     ${INSTALL} calibre pdfarranger
 
-    ${DG_INSTALL} master-pdf obsidian softmaker-office-2021
+    ${DG_INSTALL} master-pdf obsidian softmaker-office-2021 zoom
 }
 
 function final_cleanup() {
