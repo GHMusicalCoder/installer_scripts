@@ -320,6 +320,26 @@ function install_office() {
     ${DG_INSTALL} master-pdf obsidian softmaker-office-2021 zoom
 }
 
+function install_classic_optical() {
+    messenger info "Installing Classic Optical usage applications..."
+    if [ "${COMP_NAME}" == "the-doctor" ] || [ "${COMP_NAME}" == "classopt-ckiraly" ]; then
+        cd "${HOME}/Applications/GitApps"
+        ${CLONE} "https://github.com/Drewsif/PiShrink.git"
+        ${CLONE} "https://github.com/dhruvvyas90/qemu-rpi-kernel.git"
+        ln -s "${GIT_DIR}/files/bash_office" "${HOME}/.bash_office"
+
+        ${INSTALL} kpartx pw
+        ${FLATPAK} com.getpostman.Postman com.google.AndroidStudio
+        ${DG_INSTALL} teams dbeaver-ce
+    fi    
+}
+
+function install_laptop_tools() {
+    if [ "${COMP_NAME}" == "the-tardis" ] || [ "${COMP_NAME}" == "classopt-ckiraly" ]; then
+        ${INSTALL} laptop-mode-tools
+    fi
+}
+
 function final_cleanup() {
     messenger info "Removing undesired fonts..."
     ${SUDO} ${APT} purge -y fonts-kacst* fonts-gubbi fonts-kalapi fonts-telu* fonts-lklug* fonts-beng* \
@@ -382,5 +402,8 @@ messenger info "Starting installation process..."
 #install_graphics
 #install_internet
 #install_multimedia
+#install_office
+#install_classic_optical
+#install_laptop_tools
 
 #final_cleanup
