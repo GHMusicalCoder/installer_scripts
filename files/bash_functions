@@ -1,0 +1,200 @@
+#!/usr/bin/env bash
+
+# personal functions
+function cheat() {
+    /usr/bin/curl https://cheat.sh/$1
+}
+
+function git_pull_all() {
+    cd ~/Development;
+    if [ -d "ansible_pull" ]; then
+        cd ansible_pull;
+        echo "checking for ansible pull updates"
+        git pull;
+        cd ..;
+    fi
+
+    if [ -d "music-karaoke-tracker" ]; then
+        cd music-karaoke-tracker;
+        echo "checking for music tracker updates"
+        git pull;
+        cd ..;
+    fi
+
+    if [ -d "lyric-web-app" ]; then
+        cd lyric-web-app;
+        echo "checking for lyric updates"
+        git pull;
+        cd ..;
+    fi
+
+    if [ -d "my-notes" ]; then
+        cd my-notes;
+        echo "checking for notes updates"
+        git pull;
+        cd ..;
+    fi
+
+    if [ -d "codingsites" ]; then
+        cd codingsites;
+        echo "checking for coding site updates"
+        git pull;
+        cd ..;
+    fi
+
+    if [ -d "personal-wikis" ]; then
+        cd personal-wikis;
+        echo "checking for personal wikis updates"
+        git pull;
+        cd ..;
+    fi
+
+    if [ -d "sudoku-solver" ]; then
+        cd sudoku-solver;
+        echo "checking for sudoku updates"
+        git pull;
+        cd ..;
+    fi
+
+    if [ -d "tablemanager" ]; then
+        cd tablemanager;
+        echo "checking for table mgr updates"
+        git pull;
+        cd ..;
+    fi
+
+    if [ -d "wordplay" ]; then
+        cd wordplay;
+        echo "checking for wordplay updates"        
+        git pull;
+        cd ..;
+    fi
+
+    if [ -d "wordle-solver" ]; then
+        cd wordle-solver;
+        echo "checking for wordle updates"
+        git pull;
+        cd ..;
+    fi
+
+    if [ -d "rpg-cards" ]; then
+        cd rpg-cards;
+        echo "checking for rpg-cards updates"
+        git pull;
+        cd ..;
+    fi
+
+    # sends prompt back to user home - so put anything else in Development above this call
+    cd ~/Applications/GitApps;
+    if [ -d "pyenv" ]; then
+        cd pyenv
+        echo "checking for pyenv updates"
+        git pull;
+        cd;
+    fi
+
+    cd ~/Work;
+    if [ -d "ObsidianNotes" ]; then
+        cd ObsidianNotes
+        echo "checking for Obsidian Notes updates"
+        git pull;
+        cd;
+    fi
+
+}
+
+function update_ytdl() {
+    cd ~/Applications/SAApps;
+    if [ -d "yt-dlp" ]; then
+        cd yt-dlp;
+        ./yt-dlp -U;
+    fi
+    cd;
+}
+
+function remove_old_snaps() {
+    snap list --all | mawk '/disabled/{print $1, $3}' |
+    while read snapname revision; do
+        sudo snap remove "$snapname" --revision="$revision"
+    done
+}
+
+function update_obsidian_notes() {
+    cd ~/Work/ObsidianNotes
+    git add .;
+    git commit -m "functional update of notes";
+    git push origin main;
+    cd;
+}
+
+function dir_list() {
+    local f
+
+    for f in "$1"/*; do
+        [[ -d $f ]] && echo "  D >>: $f" && dir_list "$f"
+        [[ -f $f ]] && echo "    >>: $f"
+    done
+}
+
+function backup_doctor() {
+    declare -a FOLDERS=("calibre" "Documents" "Downloads" "Music" "Pictures" "Temp" "Videos" "Work")
+    RSYNC_CMD="rsync -auv"
+    FROM="/home/christopher/"
+    TO="/mnt/crypt/Backups/the-doctor/"
+    for f in ${FOLDERS[@]}
+    do 
+        if [[ "${f}" == "calibre" ]]; then
+            echo "Backing Calibre Library up to the NAS"
+            ${RSYNC_CMD} ${FROM}Calibre\ Library/* ${TO}Calibre\ Library
+        else
+            echo "Backing ${f} up to the NAS"
+            ${RSYNC_CMD} ${FROM}${f}/* ${TO}${f}
+        fi
+    done
+}
+
+function update_crypt_backup() {
+    #backups
+    FROM="/mnt/crypt/Backups/"
+    TO="/media/christopher/ARCHIVAL/Backups/"
+    RSYNC_CMD="rsync -auv"
+    if [[ -d "${TO}" ]]; then
+        declare -a FOLDERS=("db_backups" "satelite-5" "the-doctor" "the-tardis")
+        for f in ${FOLDERS[@]}
+        do
+            echo "Backing ${f} up to the NAS"
+            if [[ "${f}" == "the-doctor" ]]; then
+                ${RSYNC_CMD} ${FROM}${f}/* ${TO}${f}-2207
+            else
+                ${RSYNC_CMD} ${FROM}${f}/* ${TO}${f}
+            fi
+        done
+
+        #unsorted
+        FROM="/mnt/crypt/Unsorted/"
+        TO="/media/christopher/ARCHIVAL/Unsorted/"
+        declare -a FOLDERS=("CKMusicDrive" "DaniMusicDrive" "NewStuff" "StorageOne" "StorageTwo" "StorageThree")
+        for f in ${FOLDERS[@]}
+        do
+            echo "Backing ${f} up to the NAS"
+            if [[ "${f}" == "CKMusicDrive" ]] || [[ "${f}" == "DaniMusicDrive" ]]; then
+                ${RSYNC_CMD} ${FROM}${f}/* ${TO}DJDrives
+            else
+                ${RSYNC_CMD} ${FROM}${f}/* ${TO}${f}
+            fi
+        done
+    else
+        echo "Your Media Storage Archive is missing - make sure its plugged in and turned on..."
+    fi
+}
+
+function update_vault_backup() {
+    RSYNC_CMD="rsync -auv"
+    FROM="/mnt/vault/"
+    TO="/media/christopher/ARCHIVAL/vault"
+    if [[ -d "${TO}" ]]; then
+        ${RSYNC_CMD} ${FROM}* ${TO}
+    else
+        echo "Your Media Storage Archive is missing - make sure its plugged in and turned on..."
+    fi
+}

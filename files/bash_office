@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# office aliases and functions
+function mount_ship() {
+    LOOP=$(sudo losetup --show -fP ~/Work/RasPi/Pitracking.img)
+    echo "${LOOP}"
+    sudo mount ${LOOP}p1 /mnt/ship/sboot;
+    echo "ship boot partition mounted to /mnt/ship/sboot"
+    sudo mount ${LOOP}p2 /mnt/ship/sroot;
+    echo "ship root partition mounted to /mnt/ship/sroot"
+}
+
+function unmount_ship() {
+    sudo umount /mnt/ship/sboot;
+    echo "ship boot partition unmounted"
+    sudo umount /mnt/ship/sroot;
+    echo "ship root partition unmounted"
+    LOOP=$(losetup | grep Pitracking | grep -oE '(^[^[:blank:]]+)')
+    sudo losetup -d ${LOOP}
+    echo "${LOOP} has been removed from the device loop"
+}
+
+function make_ship() {
+    sudo ddrescue --force -D ~/Work/RasPi/Pitracking.img /dev/sdb;
+}
+
+alias pishrink='sudo ~/Applications/GitApps/pishrink/pishrink.sh'
