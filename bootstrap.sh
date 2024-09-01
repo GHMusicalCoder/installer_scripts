@@ -98,7 +98,7 @@ function system_apps() {
         llvm lsscsi make mlocate net-tools nfs-common nmap p7zip-rar pavucontrol \
         rar software-properties-common tk-dev ttf-mscorefonts-installer unrar vim wget xz-utils
 
-    ${DG_INSTALL} appimagelauncher bitwarden bottom duf fd git-delta lsd ubuntu-make
+    ${DG_INSTALL} appimagelauncher bitwarden bottom duf fd git-delta lsd nala ubuntu-make
 
     ${SUDO} flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 }
@@ -137,6 +137,18 @@ function system_btop() {
     make install PREFIX="${BIN_DIR}"
 
     cd "$ACTIVE_DIR"
+}
+
+function system_g910-keys() {
+    if [ "${COMP_NAME}" == "the-doctor" ]; then
+        cd "${GIT_APPS}"
+        ${CLONE} "https://github.com/JSubelj/g910-gkey-macro-support.git"
+        ${SUDO} modprobe uinput
+        ${SUDO} sh "./g910-gkey-macro-support/installer.sh"
+
+
+        cd "${ACTIVE_DIR}"
+    fi
 }
 
 function mount_nfs_folders() {
@@ -323,7 +335,7 @@ function install_office() {
 function install_classic_optical() {
     messenger info "Installing Classic Optical usage applications..."
     if [ "${COMP_NAME}" == "the-doctor" ] || [ "${COMP_NAME}" == "classopt-ckiraly" ]; then
-        cd "${HOME}/Applications/GitApps"
+        cd "${GIT_APPS}"
         ${CLONE} "https://github.com/Drewsif/PiShrink.git"
         ${CLONE} "https://github.com/dhruvvyas90/qemu-rpi-kernel.git"
         ln -s "${GIT_DIR}/files/bash_office" "${HOME}/.bash_office"
@@ -331,6 +343,7 @@ function install_classic_optical() {
         ${INSTALL} kpartx pw
         ${FLATPAK} com.getpostman.Postman com.google.AndroidStudio
         ${DG_INSTALL} teams dbeaver-ce
+        cd "${ACTIVE_DIR}"
     fi    
 }
 
@@ -338,6 +351,10 @@ function install_laptop_tools() {
     if [ "${COMP_NAME}" == "the-tardis" ] || [ "${COMP_NAME}" == "classopt-ckiraly" ]; then
         ${INSTALL} laptop-mode-tools
     fi
+}
+
+function install_final_doctor() {
+    
 }
 
 function final_cleanup() {
@@ -362,6 +379,7 @@ VENTOY_FILES="/media/$USER/ventoy/InstallScript/files"
 HOME="/home/$USER"
 GIT_DIR="${HOME}/Development/installer_scripts"
 BIN_DIR="${HOME}/.local"
+GIT_APPS="${HOME}/Applications/GitApps"
 CACHE_DIR="${HOME}/Temp"
 ACTIVE_DIR="$(pwd)"
 UBUNTU_NICK="jammy"
@@ -405,5 +423,6 @@ messenger info "Starting installation process..."
 #install_office
 #install_classic_optical
 #install_laptop_tools
+#system_g910-keys
 
 #final_cleanup
